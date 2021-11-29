@@ -26,6 +26,13 @@ const routes: MyRouteProps[] = [
         exact: true
     },
     {
+        name: 'categories.create',
+        label: 'Criar categoria',
+        path: '/categories/create',
+        component: CategoryList,
+        exact: true,
+    },
+    {
         name: 'cast_members.list',
         label: 'Listar membros de elencos',
         path: '/cast-members',
@@ -33,9 +40,23 @@ const routes: MyRouteProps[] = [
         exact: true,
     },
     {
+        name: 'cast_members.create',
+        label: 'Criar membro de elenco',
+        path: '/cast-members/create',
+        component: CastMemberList,
+        exact: true,
+    },
+    {
         name: 'genres.list',
         label: 'Listar gêneros',
         path: '/genres',
+        component: GenreList,
+        exact: true,
+    },
+    {
+        name: 'genres.create',
+        label: 'Criar gêneros',
+        path: '/genres/create',
         component: GenreList,
         exact: true,
     },
