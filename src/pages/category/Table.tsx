@@ -4,6 +4,8 @@ import format from "date-fns/format";
 import parseISO from "date-fns/parseISO";
 import { BadgeNo, BadgeYes } from "../../components/Badge";
 import MUIDataTable, { MUIDataTableColumn } from 'mui-datatables';
+import { Category } from '../../util/model';
+import categoryHttp from '../../util/http/category-http';
 
 const columnsDefinition: MUIDataTableColumn[] = [
     {
@@ -30,19 +32,24 @@ const columnsDefinition: MUIDataTableColumn[] = [
     },
 ];
 
-const data = [
-    { name: "teste1", is_active: true, created_at: "2019-12-12" },
-    { name: "teste2", is_active: false, created_at: "2019-12-13" },
-    { name: "teste3", is_active: true, created_at: "2019-12-14" },
-    { name: "teste4", is_active: false, created_at: "2019-12-15" },
-]
-
 type Props = {};
 const Table = (props: Props) => {
 
-    // const [data, setData] = useState([]);
+    const [data, setData] = useState<Category[]>([]);
 
     useEffect(() => {
+        let isSubscribed = true;
+        (async () => {
+            const { data } = await categoryHttp.list();
+            if (isSubscribed) {
+                setData(data.data);
+            }
+        })();
+
+        return () => {
+            isSubscribed = false;
+        }
+
     }, []);
 
     return (
@@ -53,4 +60,8 @@ const Table = (props: Props) => {
 };
 
 export default Table;
+
+function useFilter(arg0: { columns: MUIDataTableColumn[]; debounceTime: any; rowsPerPage: any; rowsPerPageOptions: any; tableRef: any; }): { columns: any; filterManager: any; cleanSearchText: any; filterState: any; debouncedFilterState: any; totalRecords: any; setTotalRecords: any; } {
+    throw new Error('Function not implemented.');
+}
 

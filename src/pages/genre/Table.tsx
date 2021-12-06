@@ -4,6 +4,8 @@ import format from "date-fns/format";
 import parseISO from "date-fns/parseISO";
 import { BadgeNo, BadgeYes } from "../../components/Badge";
 import MUIDataTable, { MUIDataTableColumn } from 'mui-datatables';
+import { Genre } from '../../util/model';
+import genreHttp from '../../util/http/genre-http';
 
 const columnsDefinition: MUIDataTableColumn[] = [
     {
@@ -40,19 +42,24 @@ const columnsDefinition: MUIDataTableColumn[] = [
     },
 ];
 
-const data = [
-    { name: "Genre1", is_active: true, categories: [{ "name": "Categoria1" }, { "name": "Categoria2" }, { "name": "Categoria3" }], created_at: "2019-12-12" },
-    { name: "Genre2", is_active: false, categories: [{ "name": "Categoria1" }, { "name": "Categoria2" }, { "name": "Categoria3" }], created_at: "2019-12-13" },
-    { name: "Genre3", is_active: true, categories: [{ "name": "Categoria1" }, { "name": "Categoria2" }, { "name": "Categoria3" }], created_at: "2019-12-14" },
-    { name: "Genre4", is_active: false, categories: [{ "name": "Categoria1" }, { "name": "Categoria2" }, { "name": "Categoria3" }], created_at: "2019-12-15" },
-]
-
 type Props = {};
 const Table = (props: Props) => {
 
-    // const [data, setData] = useState([]);
+    const [data, setData] = useState<Genre[]>([]);
 
     useEffect(() => {
+        let isSubscribed = true;
+        (async () => {
+            const { data } = await genreHttp.list();
+            if (isSubscribed) {
+                setData(data.data);
+            }
+        })();
+
+        return () => {
+            isSubscribed = false;
+        }
+
     }, []);
 
     return (

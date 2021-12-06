@@ -33,6 +33,13 @@ const routes: MyRouteProps[] = [
         exact: true,
     },
     {
+        name: 'categories.edit',
+        label: 'Editar categoria',
+        path: '/categories/:id/edit',
+        component: CategoryForm,
+        exact: true
+    },
+    {
         name: 'cast_members.list',
         label: 'Listar membros de elencos',
         path: '/cast-members',
@@ -44,6 +51,20 @@ const routes: MyRouteProps[] = [
         label: 'Criar membro de elenco',
         path: '/cast-members/create',
         component: CastMemberList,
+        exact: true,
+    },
+    {
+        name: 'cast_members.edit',
+        label: 'Editar membro de elenco',
+        path: '/cast-members/:id/edit',
+        component: CastMemberForm,
+        exact: true,
+    },
+    {
+        name: 'cast_members.edit',
+        label: 'Editar membro de elenco',
+        path: '/cast-members/:id/edit',
+        component: CastMemberForm,
         exact: true,
     },
     {
@@ -60,27 +81,13 @@ const routes: MyRouteProps[] = [
         component: GenreList,
         exact: true,
     },
-    // {
-    //     name: 'categories.create',
-    //     label: 'Criar categoria',
-    //     path: '/categories/create',
-    //     component: CategoryForm,
-    //     exact: true,
-    // },
-    // {
-    //     name: 'cast_members.list',
-    //     label: 'Listar membros de elencos',
-    //     path: '/cast-members',
-    //     component: CastMemberList,
-    //     exact: true,
-    // },
-    // {
-    //     name: 'cast_members.create',
-    //     label: 'Criar membro de elenco',
-    //     path: '/cast-members/create',
-    //     component: CastMemberForm,
-    //     exact: true,
-    // },
+    {
+        name: 'genres.edit',
+        label: 'Editar gênero',
+        path: '/genres/:id/edit',
+        component: GenreForm,
+        exact: true,
+    }
 ]
 
 export default routes;

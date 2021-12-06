@@ -3,7 +3,8 @@ import { useEffect, useRef, useState } from "react";
 import format from "date-fns/format";
 import parseISO from "date-fns/parseISO";
 import MUIDataTable, { MUIDataTableColumn } from 'mui-datatables';
-import { CastMemberTypeMap } from '../../util/model';
+import { CastMember, CastMemberTypeMap } from '../../util/model';
+import castMemberHttp from '../../util/http/cast-member-http';
 
 
 const columnsDefinition: MUIDataTableColumn[] = [
@@ -31,19 +32,24 @@ const columnsDefinition: MUIDataTableColumn[] = [
     },
 ];
 
-const data = [
-    { name: "Member1", type: 1, created_at: "2021-12-12" },
-    { name: "Member2", type: 2, created_at: "2021-12-13" },
-    { name: "Member3", type: 1, created_at: "2021-12-14" },
-    { name: "Member4", type: 2, created_at: "2021-12-15" },
-]
-
 type Props = {};
 const Table = (props: Props) => {
 
-    // const [data, setData] = useState([]);
+    const [data, setData] = useState<CastMember[]>([]);
 
     useEffect(() => {
+        let isSubscribed = true;
+        (async () => {
+            const { data } = await castMemberHttp.list();
+            if (isSubscribed) {
+                setData(data.data);
+            }
+        })();
+
+        return () => {
+            isSubscribed = false;
+        }
+
     }, []);
 
     return (
