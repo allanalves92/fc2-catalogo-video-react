@@ -4,7 +4,7 @@ import format from "date-fns/format";
 import parseISO from "date-fns/parseISO";
 import { BadgeNo, BadgeYes } from "../../components/Badge";
 import MUIDataTable, { MUIDataTableColumn } from 'mui-datatables';
-import { Category } from '../../util/model';
+import { Category, ListResponse } from '../../util/model';
 import categoryHttp from '../../util/http/category-http';
 
 const columnsDefinition: MUIDataTableColumn[] = [
@@ -40,7 +40,7 @@ const Table = (props: Props) => {
     useEffect(() => {
         let isSubscribed = true;
         (async () => {
-            const { data } = await categoryHttp.list();
+            const { data } = await categoryHttp.list<ListResponse<Category>>();
             if (isSubscribed) {
                 setData(data.data);
             }
