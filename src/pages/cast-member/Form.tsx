@@ -1,7 +1,5 @@
 import * as React from 'react';
 import {
-    Box,
-    Button,
     ButtonProps,
     FormControl,
     FormControlLabel,
@@ -43,12 +41,6 @@ const validationSchema = yup.object().shape({
 export const Form = () => {
 
     const classes = useStyles();
-
-    const buttonProps: ButtonProps = {
-        className: classes.submit,
-        color: 'secondary',
-        variant: 'contained',
-    };
 
     const {
         register,

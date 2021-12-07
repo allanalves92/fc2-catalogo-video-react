@@ -16,42 +16,35 @@ import { useEffect, useState } from 'react';
 import { useHistory, useParams } from 'react-router-dom';
 import { useSnackbar } from 'notistack';
 import { Category } from '../../util/model';
-
-const useStyles = makeStyles((theme: Theme) => {
-    return {
-        submit: {
-            margin: theme.spacing(1),
-        },
-    };
-});
+import SubmitActions from '../../components/SubmitActions';
 
 const validationSchema = yup.object().shape({
     name: yup.string().label('Nome').required().max(255),
 });
 
 export const Form = () => {
-    const classes = useStyles();
 
-    const { register, handleSubmit, getValues, setValue, errors, reset, watch } =
-        useForm<{ name; is_active }>({
-            validationSchema,
-            defaultValues: {
-                is_active: true,
-            },
-        });
+    const {
+        register,
+        handleSubmit,
+        getValues,
+        setValue,
+        errors,
+        reset,
+        watch,
+        triggerValidation,
+    } = useForm<{ name; is_active }>({
+        validationSchema,
+        defaultValues: {
+            is_active: true,
+        },
+    });
 
     const snackbar = useSnackbar();
     const history = useHistory();
     const { id } = useParams<{ id: string }>();
     const [category, setCategory] = useState<Category | null>(null);
     const [loading, setLoading] = useState<boolean>(false);
-
-    const buttonProps: ButtonProps = {
-        className: classes.submit,
-        color: 'secondary',
-        variant: 'contained',
-        disabled: loading,
-    };
 
     useEffect(() => {
         if (!id) {
@@ -68,15 +61,14 @@ export const Form = () => {
                 }
             } catch (error) {
                 console.error(error);
-                snackbar.enqueueSnackbar(
-                    'Não foi possível carregar as informações',
-                    { variant: 'error', }
-                )
+                snackbar.enqueueSnackbar('Não foi possível carregar as informações', {
+                    variant: 'error',
+                });
             }
         })();
         return () => {
             isSubscribed = false;
-        }
+        };
     }, []);
 
     useEffect(() => {
@@ -89,25 +81,21 @@ export const Form = () => {
                 ? categoryHttp.create(formData)
                 : categoryHttp.update(category.id, formData);
             const { data } = await http;
-            snackbar.enqueueSnackbar(
-                'Categoria salva com sucesso',
-                { variant: 'success' }
-            );
+            snackbar.enqueueSnackbar('Categoria salva com sucesso', {
+                variant: 'success',
+            });
             setTimeout(() => {
                 event
-                    ? (
-                        id
-                            ? history.replace(`/categories/${data.data.id}/edit`)
-                            : history.push(`/categories/${data.data.id}/edit`)
-                    )
-                    : history.push('/categories')
+                    ? id
+                        ? history.replace(`/categories/${data.data.id}/edit`)
+                        : history.push(`/categories/${data.data.id}/edit`)
+                    : history.push('/categories');
             });
         } catch (error) {
             console.error(error);
-            snackbar.enqueueSnackbar(
-                'Não foi possível salvar a categoria',
-                { variant: 'error' }
-            )
+            snackbar.enqueueSnackbar('Não foi possível salvar a categoria', {
+                variant: 'error',
+            });
         }
     }
 
@@ -152,18 +140,14 @@ export const Form = () => {
                 labelPlacement={'end'}
             />
 
-            <Box dir={'rtl'}>
-                <Button
-                    color={'primary'}
-                    {...buttonProps}
-                    onClick={() => onSubmit(getValues(), null)}
-                >
-                    Salvar
-                </Button>
-                <Button {...buttonProps} type='submit'>
-                    Salvar e continuar editando
-                </Button>
-            </Box>
+            <SubmitActions
+                disabledButtons={loading}
+                handleSave={() =>
+                    triggerValidation().then((isValid) => {
+                        isValid && onSubmit(getValues(), null);
+                    })
+                }
+            />
         </form>
     );
 };

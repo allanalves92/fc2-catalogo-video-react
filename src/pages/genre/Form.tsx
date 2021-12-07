@@ -101,7 +101,7 @@ export const Form = () => {
         return () => {
             isSubscribed = false;
         }
-    }, [id, reset, enqueueSnackbar]); //[]
+    }, [id, reset, enqueueSnackbar]);
 
     useEffect(() => {
         register({ name: "categories_id" })
