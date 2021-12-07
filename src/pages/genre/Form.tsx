@@ -1,8 +1,5 @@
 import * as React from 'react';
-import {
-    MenuItem,
-    TextField,
-} from '@material-ui/core';
+import { MenuItem, TextField } from '@material-ui/core';
 import { useForm } from 'react-hook-form';
 import genreHttp from '../../util/http/genre-http';
 import categoryHttp from '../../util/http/category-http';
@@ -12,6 +9,7 @@ import { useSnackbar } from 'notistack';
 import { useHistory, useParams } from 'react-router-dom';
 import { Genre, Category } from '../../util/model';
 import SubmitActions from '../../components/SubmitActions';
+import { DefaultForm } from '../../components/DefaultForm';
 
 const validationSchema = yup.object().shape({
     name: yup.string().label('Nome').required().max(255),
@@ -108,7 +106,7 @@ export const Form = () => {
     }
 
     return (
-        <form onSubmit={handleSubmit(onSubmit)}>
+        <DefaultForm GridItemProps={{ xs: 12, md: 6 }} onSubmit={handleSubmit(onSubmit)}>
             <TextField
                 name='name'
                 label='Nome'
@@ -157,6 +155,6 @@ export const Form = () => {
                     })
                 }
             />
-        </form>
+        </DefaultForm>
     );
 };

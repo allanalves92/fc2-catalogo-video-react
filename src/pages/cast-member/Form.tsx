@@ -4,11 +4,9 @@ import {
     FormControlLabel,
     FormHelperText,
     FormLabel,
-    makeStyles,
     Radio,
     RadioGroup,
     TextField,
-    Theme,
 } from '@material-ui/core';
 import { useForm } from 'react-hook-form';
 import { useEffect, useState } from 'react';
@@ -18,29 +16,14 @@ import { useHistory, useParams } from 'react-router-dom';
 import { useSnackbar } from 'notistack';
 import SubmitActions from '../../components/SubmitActions';
 import { CastMember } from '../../util/model';
-
-const useStyles = makeStyles((theme: Theme) => {
-    return {
-        submit: {
-            margin: theme.spacing(1),
-        },
-    };
-});
+import { DefaultForm } from '../../components/DefaultForm';
 
 const validationSchema = yup.object().shape({
-    name: yup.string()
-        .label('Nome')
-        .required()
-        .max(255),
-    type: yup.number()
-        .label('Tipo')
-        .required(),
+    name: yup.string().label('Nome').required().max(255),
+    type: yup.number().label('Tipo').required(),
 });
 
 export const Form = () => {
-
-    const classes = useStyles();
-
     const {
         register,
         handleSubmit,
@@ -49,8 +32,8 @@ export const Form = () => {
         errors,
         reset,
         watch,
-        triggerValidation
-    } = useForm<{ name, type }>({
+        triggerValidation,
+    } = useForm<{ name; type }>({
         validationSchema,
     });
 
@@ -75,10 +58,9 @@ export const Form = () => {
                 }
             } catch (error) {
                 console.error(error);
-                snackbar.enqueueSnackbar(
-                    'Não foi possível carregar as informações',
-                    { variant: 'error', }
-                )
+                snackbar.enqueueSnackbar('Não foi possível carregar as informações', {
+                    variant: 'error',
+                });
             } finally {
                 setLoading(false);
             }
@@ -86,11 +68,11 @@ export const Form = () => {
 
         return () => {
             isSubscribed = false;
-        }
+        };
     }, []);
 
     useEffect(() => {
-        register({ name: "type" })
+        register({ name: 'type' });
     }, [register]);
 
     async function onSubmit(formData, event) {
@@ -100,37 +82,33 @@ export const Form = () => {
                 ? castMemberHttp.create({})
                 : castMemberHttp.update(castMember.id, formData);
             const { data } = await http;
-            snackbar.enqueueSnackbar(
-                'Membro de elenco salvo com sucesso',
-                { variant: 'success' }
-            );
+            snackbar.enqueueSnackbar('Membro de elenco salvo com sucesso', {
+                variant: 'success',
+            });
             setTimeout(() => {
                 event
-                    ? (
-                        id
-                            ? history.replace(`/cast-members/${data.data.id}/edit`)
-                            : history.push(`/cast-members/${data.data.id}/edit`)
-                    )
-                    : history.push('/cast-members')
+                    ? id
+                        ? history.replace(`/cast-members/${data.data.id}/edit`)
+                        : history.push(`/cast-members/${data.data.id}/edit`)
+                    : history.push('/cast-members');
             });
         } catch (error) {
             console.error(error);
-            snackbar.enqueueSnackbar(
-                'Não foi possível salvar o membro de elenco',
-                { variant: 'error' }
-            )
+            snackbar.enqueueSnackbar('Não foi possível salvar o membro de elenco', {
+                variant: 'error',
+            });
         } finally {
-            setLoading(false)
+            setLoading(false);
         }
     }
 
     return (
-        <form onSubmit={handleSubmit(onSubmit)}>
+        <DefaultForm GridItemProps={{ xs: 12, md: 6 }} onSubmit={handleSubmit(onSubmit)}>
             <TextField
-                name="name"
-                label="Nome"
+                name='name'
+                label='Nome'
                 fullWidth
-                variant={"outlined"}
+                variant={'outlined'}
                 inputRef={register}
                 disabled={loading}
                 error={errors.name !== undefined}
@@ -138,33 +116,43 @@ export const Form = () => {
                 InputLabelProps={{ shrink: true }}
             />
             <FormControl
-                margin={"normal"}
+                margin={'normal'}
                 error={errors.type !== undefined}
                 disabled={loading}
             >
-                <FormLabel component="legend">Tipo</FormLabel>
+                <FormLabel component='legend'>Tipo</FormLabel>
                 <RadioGroup
-                    name="type"
+                    name='type'
                     onChange={(e) => {
                         setValue('type', parseInt(e.target.value));
                     }}
-                    value={watch('type') + ""}
+                    value={watch('type') + ''}
                 >
-                    <FormControlLabel value="1" control={<Radio color={"primary"} />} label="Diretor" />
-                    <FormControlLabel value="2" control={<Radio color={"primary"} />} label="Ator" />
+                    <FormControlLabel
+                        value='1'
+                        control={<Radio color={'primary'} />}
+                        label='Diretor'
+                    />
+                    <FormControlLabel
+                        value='2'
+                        control={<Radio color={'primary'} />}
+                        label='Ator'
+                    />
                 </RadioGroup>
-                {
-                    errors.type && <FormHelperText id="type-helper-text">{errors.type.message}</FormHelperText>
-                }
+                {errors.type && (
+                    <FormHelperText id='type-helper-text'>
+                        {errors.type.message}
+                    </FormHelperText>
+                )}
             </FormControl>
             <SubmitActions
                 disabledButtons={loading}
                 handleSave={() =>
-                    triggerValidation().then(isValid => {
-                        isValid && onSubmit(getValues(), null)
+                    triggerValidation().then((isValid) => {
+                        isValid && onSubmit(getValues(), null);
                     })
                 }
             />
-        </form>
+        </DefaultForm>
     );
 };
