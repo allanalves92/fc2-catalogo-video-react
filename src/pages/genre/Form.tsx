@@ -7,7 +7,7 @@ import { useEffect, useState } from 'react';
 import * as yup from '../../util/vendor/yup';
 import { useSnackbar } from 'notistack';
 import { useHistory, useParams } from 'react-router-dom';
-import { Genre, Category } from '../../util/model';
+import { Genre, Category } from '../../util/models';
 import SubmitActions from '../../components/SubmitActions';
 import { DefaultForm } from '../../components/DefaultForm';
 

@@ -1,9 +1,11 @@
-import { RouteProps } from 'react-router-dom'
-import Dashboard from '../pages/Dashboard';
-import CategoryList from '../pages/category/PageList';
+import { RouteProps } from "react-router-dom";
+import Dashboard from "../pages/Dashboard";
+import CategoryList from "../pages/category/PageList";
+import CategoryForm from "../pages/category/PageForm";
 import CastMemberList from "../pages/cast-member/PageList";
+import CastMemberForm from "../pages/cast-member/PageForm";
 import GenreList from "../pages/genre/PageList";
-
+import GenreForm from "../pages/genre/PageForm";
 
 export interface MyRouteProps extends RouteProps {
     name: string;

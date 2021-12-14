@@ -15,7 +15,7 @@ import * as yup from '../../util/vendor/yup';
 import { useHistory, useParams } from 'react-router-dom';
 import { useSnackbar } from 'notistack';
 import SubmitActions from '../../components/SubmitActions';
-import { CastMember } from '../../util/model';
+import { CastMember } from '../../util/models';
 import { DefaultForm } from '../../components/DefaultForm';
 
 const validationSchema = yup.object().shape({

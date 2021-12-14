@@ -1,8 +1,8 @@
 import React from 'react';
 import './App.css';
 import { Navbar } from './components/Navbar';
-import { BrowserRouter } from 'react-router-dom';
 import { Box, CssBaseline, MuiThemeProvider } from '@material-ui/core';
+import { BrowserRouter } from 'react-router-dom';
 import AppRouter from './routes/AppRouter';
 import Breadcrumbs from './components/Breadcrumbs';
 import theme from './theme';
@@ -25,6 +25,6 @@ const App: React.FC = () => {
       </MuiThemeProvider>
     </React.Fragment>
   );
-}
+};
 
 export default App;

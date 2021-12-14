@@ -1,21 +1,19 @@
 import * as React from 'react';
-import { useEffect, useRef, useState } from 'react';
-import format from 'date-fns/format';
-import parseISO from 'date-fns/parseISO';
-import { BadgeNo, BadgeYes } from '../../components/Badge';
-import { Category, ListResponse } from '../../util/model';
-import categoryHttp from '../../util/http/category-http';
-import DefaultTable, {
-    makeActionStyles,
-    MuiDataTableRefComponent,
-    TableColumn,
-} from '../../components/Table';
-import { IconButton, MuiThemeProvider } from '@material-ui/core';
+import { useEffect, useRef, useState } from "react";
+import format from "date-fns/format";
+import parseISO from "date-fns/parseISO";
+import categoryHttp from "../../util/http/category-http";
+import { BadgeNo, BadgeYes } from "../../components/Badge";
+import { Category, ListResponse } from "../../util/models";
+import DefaultTable, { makeActionStyles, TableColumn, MuiDataTableRefComponent } from '../../components/Table';
+import { useSnackbar } from "notistack";
+import { IconButton, MuiThemeProvider } from "@material-ui/core";
+import { Link } from "react-router-dom";
 import EditIcon from '@material-ui/icons/Edit';
-import { Link } from 'react-router-dom';
-import { useSnackbar } from 'notistack';
-import { FilterResetButton } from '../../components/Table/FilterResetButton';
-import useFilter from '../../hooks/useFilter';
+import { FilterResetButton } from "../../components/Table/FilterResetButton";
+import useFilter from "../../hooks/useFilter";
+import { useContext } from "react";
+import LoadingContext from "../../components/loading/LoadingContext";
 
 const columnsDefinition: TableColumn[] = [
     {
@@ -24,44 +22,44 @@ const columnsDefinition: TableColumn[] = [
         width: '30%',
         options: {
             sort: false,
-            filter: false,
-        },
+            filter: false
+        }
     },
     {
-        name: 'name',
-        label: 'Nome',
+        name: "name",
+        label: "Nome",
         width: '43%',
         options: {
-            filter: false,
-        },
+            filter: false
+        }
     },
     {
-        name: 'is_active',
-        label: 'Ativo?',
+        name: "is_active",
+        label: "Ativo?",
         width: '4%',
         options: {
             filterOptions: {
-                names: ['Sim', 'Não'],
+                names: ['Sim', 'Não']
             },
             customBodyRender(value, tableMeta, updateValue) {
                 return value ? <BadgeYes /> : <BadgeNo />;
-            },
+            }
         },
     },
     {
-        name: 'created_at',
-        label: 'Criado em',
+        name: "created_at",
+        label: "Criado em",
         width: '10%',
         options: {
             filter: false,
             customBodyRender(value, tableMeta, updateValue) {
-                return <span>{format(parseISO(value), 'dd/MM/yyyy')}</span>;
-            },
-        },
+                return <span>{format(parseISO(value), 'dd/MM/yyyy')}</span>
+            }
+        }
     },
     {
-        name: 'actions',
-        label: 'Ações',
+        name: "actions",
+        label: "Ações",
         width: '13%',
         options: {
             sort: false,
@@ -75,25 +73,23 @@ const columnsDefinition: TableColumn[] = [
                     >
                         <EditIcon />
                     </IconButton>
-                );
-            },
-        },
-    },
+                )
+            }
+        }
+    }
 ];
 
 const debounceTime = 300;
 const debouncedSearchTime = 300;
 const rowsPerPage = 15;
 const rowsPerPageOptions = [15, 25, 50];
-
 const Table = () => {
-
     const snackbar = useSnackbar();
     const subscribed = useRef(true);
     const [data, setData] = useState<Category[]>([]);
-    const [loading, setLoading] = useState<boolean>(false);
+    const loading = useContext(LoadingContext);
     const tableRef = useRef() as React.MutableRefObject<MuiDataTableRefComponent>;
-
+    //property, funcao - changePage changeRowsPerPage
     const {
         columns,
         filterManager,
@@ -154,7 +150,7 @@ const Table = () => {
     return (
         <MuiThemeProvider theme={makeActionStyles(columnsDefinition.length - 1)}>
             <DefaultTable
-                title=''
+                title=""
                 columns={columns}
                 data={data}
                 loading={loading}
@@ -162,7 +158,7 @@ const Table = () => {
                 ref={tableRef}
                 options={{
                     serverSide: true,
-                    responsive: 'scrollMaxHeight',
+                    responsive: "scrollMaxHeight",
                     searchText: filterState.search as any,
                     page: filterState.pagination.page - 1,
                     rowsPerPage: filterState.pagination.per_page,
@@ -175,10 +171,9 @@ const Table = () => {
                     ),
                     onSearchChange: (value) => filterManager.changeSearch(value),
                     onChangePage: (page) => filterManager.changePage(page),
-                    onChangeRowsPerPage: (perPage) =>
-                        filterManager.changeRowsPerPage(perPage),
+                    onChangeRowsPerPage: (perPage) => filterManager.changeRowsPerPage(perPage),
                     onColumnSortChange: (changedColumn: string, direction: string) =>
-                        filterManager.changeColumnSort(changedColumn, direction),
+                        filterManager.changeColumnSort(changedColumn, direction)
                 }}
             />
         </MuiThemeProvider>
@@ -186,3 +181,4 @@ const Table = () => {
 };
 
 export default Table;
+

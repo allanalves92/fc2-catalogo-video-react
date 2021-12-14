@@ -6,7 +6,6 @@ import rootSaga from "./root-saga";
 const sagaMiddleware = createSagaMiddleware();
 const store = createStore(
     combineReducers({
-        upload
     }),
     applyMiddleware(sagaMiddleware)
 );
