@@ -1,12 +1,26 @@
-import * as React from 'react';
-import { IconButton, Menu as MuiMenu, MenuItem } from '@material-ui/core';
-import MenuIcon from '@material-ui/icons/Menu';
-import { Link } from 'react-router-dom';
-import routes, { MyRouteProps } from '../../routes';
+import * as React from "react";
+import {
+  IconButton,
+  Menu as MuiMenu,
+  MenuItem,
+  Link as MuiLink,
+  Divider,
+} from "@material-ui/core";
+import MenuIcon from "@material-ui/icons/Menu";
+import routes, { MyRouteProps } from "../../routes";
+import { Link } from "react-router-dom";
 
-const listRoutes = ['dashboard', 'categories.list', 'cast_members.list', 'genres.list'];
+const listRoutes = {
+  dashboard: "Dashboard",
+  "categories.list": "Categorias",
+  "cast_members.list": "Membros de elenco",
+  "genres.list": "Gêneros",
+  "videos.list": "Vídeos",
+};
 
-const menuRoutes = routes.filter((route) => listRoutes.includes(route.name));
+const menuRoutes = routes.filter((route) =>
+  Object.keys(listRoutes).includes(route.name)
+);
 
 export const Menu = () => {
   const [anchorEl, setAnchorEl] = React.useState(null);
@@ -18,25 +32,25 @@ export const Menu = () => {
   return (
     <React.Fragment>
       <IconButton
-        color='inherit'
-        aria-label='open drawer'
-        aria-controls='menu-appbar'
-        aria-haspopup='true'
+        color="inherit"
+        aria-label="open drawer"
+        aria-controls="menu-appbar"
+        aria-haspopup="true"
         onClick={handleOpen}
       >
         <MenuIcon />
       </IconButton>
 
       <MuiMenu
-        id='menu-appbar'
+        id="menu-appbar"
         open={open}
         anchorEl={anchorEl}
         onClose={handleClose}
-        anchorOrigin={{ vertical: 'bottom', horizontal: 'center' }}
-        transformOrigin={{ vertical: 'top', horizontal: 'center' }}
+        anchorOrigin={{ vertical: "bottom", horizontal: "center" }}
+        transformOrigin={{ vertical: "top", horizontal: "center" }}
         getContentAnchorEl={null}
       >
-        {listRoutes.map((routeName, key) => {
+        {Object.keys(listRoutes).map((routeName, key) => {
           const route = menuRoutes.find(
             (route) => route.name === routeName
           ) as MyRouteProps;
@@ -47,10 +61,21 @@ export const Menu = () => {
               to={route.path as string}
               onClick={handleClose}
             >
-              {route.label}
+              {listRoutes[routeName]}
             </MenuItem>
           );
         })}
+        <Divider />
+        <MenuItem
+          component={MuiLink}
+          href={"http://"}
+          rel="noopener"
+          target="_blank"
+          color={"textPrimary"}
+          onClick={handleClose}
+        >
+          Usuários
+        </MenuItem>
       </MuiMenu>
     </React.Fragment>
   );
