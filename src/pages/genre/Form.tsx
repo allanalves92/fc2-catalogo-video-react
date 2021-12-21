@@ -3,13 +3,14 @@ import { MenuItem, TextField } from '@material-ui/core';
 import { useForm } from 'react-hook-form';
 import genreHttp from '../../util/http/genre-http';
 import categoryHttp from '../../util/http/category-http';
-import { useEffect, useState } from 'react';
+import { useContext, useEffect, useState } from 'react';
 import * as yup from '../../util/vendor/yup';
 import { useSnackbar } from 'notistack';
 import { useHistory, useParams } from 'react-router-dom';
 import { Genre, Category } from '../../util/models';
 import SubmitActions from '../../components/SubmitActions';
 import { DefaultForm } from '../../components/DefaultForm';
+import LoadingContext from '../../components/loading/LoadingContext';
 
 const validationSchema = yup.object().shape({
     name: yup.string().label('Nome').required().max(255),
@@ -38,12 +39,11 @@ export const Form = () => {
     const { id } = useParams<{ id: string }>();
     const [genre, setGenre] = useState<Genre | null>(null);
     const [categories, setCategories] = useState<Category[]>([]);
-    const [loading, setLoading] = useState<boolean>(false);
+    const loading = useContext(LoadingContext);
 
     useEffect(() => {
         let isSubscribed = true;
         (async () => {
-            setLoading(true);
             const promises = [categoryHttp.list({ queryParams: { all: '' } })];
             if (id) {
                 promises.push(genreHttp.get(id));
@@ -68,8 +68,6 @@ export const Form = () => {
                 enqueueSnackbar('Não foi possível carregar as informações', {
                     variant: 'error',
                 });
-            } finally {
-                setLoading(false);
             }
         })();
 
@@ -83,7 +81,6 @@ export const Form = () => {
     }, [register]);
 
     async function onSubmit(formData, event) {
-        setLoading(true);
         try {
             const http = !genre
                 ? genreHttp.create({})
@@ -100,8 +97,6 @@ export const Form = () => {
         } catch (error) {
             console.error(error);
             enqueueSnackbar('Não foi possível salvar o gênero', { variant: 'error' });
-        } finally {
-            setLoading(false);
         }
     }
 

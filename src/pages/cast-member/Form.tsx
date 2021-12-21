@@ -9,7 +9,7 @@ import {
     TextField,
 } from '@material-ui/core';
 import { useForm } from 'react-hook-form';
-import { useEffect, useState } from 'react';
+import { useContext, useEffect, useState } from 'react';
 import castMemberHttp from '../../util/http/cast-member-http';
 import * as yup from '../../util/vendor/yup';
 import { useHistory, useParams } from 'react-router-dom';
@@ -17,6 +17,7 @@ import { useSnackbar } from 'notistack';
 import SubmitActions from '../../components/SubmitActions';
 import { CastMember } from '../../util/models';
 import { DefaultForm } from '../../components/DefaultForm';
+import LoadingContext from '../../components/loading/LoadingContext';
 
 const validationSchema = yup.object().shape({
     name: yup.string().label('Nome').required().max(255),
@@ -41,7 +42,7 @@ export const Form = () => {
     const history = useHistory();
     const { id } = useParams<{ id: string }>();
     const [castMember, setCastMember] = useState<CastMember | null>(null);
-    const [loading, setLoading] = useState<boolean>(false);
+    const loading = useContext(LoadingContext);
 
     useEffect(() => {
         if (!id) {
@@ -49,7 +50,6 @@ export const Form = () => {
         }
         let isSubscribed = true;
         (async () => {
-            setLoading(true);
             try {
                 const { data } = await castMemberHttp.get(id);
                 if (isSubscribed) {
@@ -61,8 +61,6 @@ export const Form = () => {
                 snackbar.enqueueSnackbar('Não foi possível carregar as informações', {
                     variant: 'error',
                 });
-            } finally {
-                setLoading(false);
             }
         })();
 
@@ -76,7 +74,6 @@ export const Form = () => {
     }, [register]);
 
     async function onSubmit(formData, event) {
-        setLoading(true);
         try {
             const http = !castMember
                 ? castMemberHttp.create({})
@@ -97,8 +94,6 @@ export const Form = () => {
             snackbar.enqueueSnackbar('Não foi possível salvar o membro de elenco', {
                 variant: 'error',
             });
-        } finally {
-            setLoading(false);
         }
     }
 
